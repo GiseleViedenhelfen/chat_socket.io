@@ -3,6 +3,7 @@ const {
   createUserModel,
   readUserModel,
   getUser,
+  deleteUsers
 } = require("../model/userModel");
 
 const createUser = async (body) => {
@@ -29,15 +30,24 @@ const findUser = async (id) => {
   try {
     await connectToDatabase();
     const checkUsers = await readUser();
-    const arrIds = checkUsers.map((user) => user.id === id);
+    const arrIds = checkUsers.filter((user) => user.id === id);
     return arrIds.length > 0 && (await getUser(id));
   } catch (error) {
     console.error("Error connecting to the database:", error);
     throw error;
   }
 };
+const resetDB = async() => {
+  try {
+    await connectToDatabase();
+    await deleteUsers();
+  } catch (error) {
+    console.error('sorry, was not posible to reset database: ', error)
+  }
+};
 module.exports = {
   createUser,
   readUser,
   findUser,
+  resetDB
 };

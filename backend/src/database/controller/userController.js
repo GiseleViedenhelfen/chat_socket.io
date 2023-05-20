@@ -1,4 +1,4 @@
-const { createUser, readUser, findUser } = require("../service/userService");
+const { createUser, readUser, findUser, resetDB } = require("../service/userService");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -7,8 +7,15 @@ const JWT_SECRET = process.env.JWT_SECRET || "yoursecretdetoken";
 class UserController {
   async create(req, res) {
     const { name, CPF, password } = req.body;
-    const getUsers = await findUser(CPF, password);
-    console.log(getUsers);
+
+    const jwtConfig = {
+      expiresIn: "7d",
+      algorithm: "HS256",
+    }
+    
+    const getUsers = await readUser();
+    const arrCPFs = getUsers.filter((user) => user.CPF === CPF);
+
     if (name.length < 3) {
       return res
         .status(400)
@@ -24,21 +31,16 @@ class UserController {
       return res.status(400).json({
         message: '"CPF" length must have 11 characters',
       });
-    } else if (getUsers !== null) {
-      res.status(409).json({ message: "User already registered" });
     }
-    const jwtConfig = {
-      expiresIn: "7d",
-      algorithm: "HS256",
-    };
-    try {
+    else if (arrCPFs.length > 0) {
+      res.status(409).json({ message: "User already registered" });
+    }    
+    else {
       const createdUser = await createUser(req.body);
       const token = jwt.sign({ data: createdUser }, JWT_SECRET, jwtConfig);
       return res.status(201).json(token);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: "Internal Server Error" });
     }
+
   }
   async read(_req, res) {
     try {
@@ -57,6 +59,14 @@ class UserController {
     }
     try {
       return res.status(200).json(getuser);
+    } catch (error) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  async resetDatabase(req, res) {
+    try {
+      await resetDB()
+      return res.status(200).send('database was reseted');
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
     }

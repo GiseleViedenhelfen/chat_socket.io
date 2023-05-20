@@ -16,6 +16,10 @@ const createUserModel = async (body) => {
   return newUser;
 }
 
+const deleteUsers = async () => {
+  const User = mongoose.model('users', userMongooseSchema);
+  await User.deleteMany();
+}
 const readUserModel = async() => {
   const User = mongoose.model('users', userMongooseSchema);
   const readUsers = await User.find();
@@ -30,5 +34,6 @@ const getUser = async(userId) => {
   module.exports = {
     createUserModel,
     readUserModel,
-    getUser
+    getUser,
+    deleteUsers
   };
