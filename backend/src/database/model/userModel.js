@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const userMongooseSchema = new mongoose.Schema(
   {
     name: String,
-    lastName: String,
     CPF: String,
     password: String,
   },
@@ -22,7 +21,14 @@ const readUserModel = async() => {
   const readUsers = await User.find();
   return readUsers
 }
+
+const getUser = async(userId) => {
+  const User = mongoose.model('users', userMongooseSchema);
+  const findUser = User.findOne({ _id: userId});
+  return findUser
+}
   module.exports = {
     createUserModel,
-    readUserModel
+    readUserModel,
+    getUser
   };
