@@ -26,12 +26,12 @@ const readUser = async () => {
     throw error;
   }
 };
-const findUser = async (id) => {
+const findUser = async (CPFUser) => {
   try {
     await connectToDatabase();
     const checkUsers = await readUser();
-    const arrIds = checkUsers.filter((user) => user.id === id);
-    return arrIds.length > 0 && (await getUser(id));
+    const arrIds = checkUsers.filter((user) => user.CPF === CPFUser);
+    return arrIds.length > 0 && (await getUser(CPFUser));
   } catch (error) {
     console.error("Error connecting to the database:", error);
     throw error;

@@ -26,9 +26,9 @@ const readUserModel = async() => {
   return readUsers
 }
 
-const getUser = async(userId) => {
+const getUser = async(CPFUser) => {
   const User = mongoose.model('users', userMongooseSchema);
-  const findUser = User.findOne({ _id: userId});
+  const findUser = User.findOne({ CPF: CPFUser});
   return findUser
 }
   module.exports = {

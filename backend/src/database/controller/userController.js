@@ -2,9 +2,10 @@ const { createUser, readUser, findUser, resetDB } = require("../service/userServ
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const JWT_SECRET = process.env.JWT_SECRET || "yoursecretdetoken";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 class UserController {
+  
   async create(req, res) {
     const { name, CPF, password } = req.body;
 
@@ -37,8 +38,8 @@ class UserController {
     }    
     else {
       const createdUser = await createUser(req.body);
-      const token = jwt.sign({ data: createdUser }, JWT_SECRET, jwtConfig);
-      return res.status(201).json(token);
+      // const token = jwt.sign({ data: createdUser }, JWT_SECRET, jwtConfig);
+      return res.status(201).json(createdUser);
     }
 
   }
@@ -51,16 +52,42 @@ class UserController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
-  async getOne(req, res) {
-    const { id } = req.body;
-    const getuser = await findUser(id);
-    if (getuser === null) {
-      return res.status(404).json({ message: "User does not exist" });
-    }
+  async login(req, res) {
     try {
-      return res.status(200).json(getuser);
+      const { CPF, password } = req.body;
+      const getuser = await findUser(CPF);
+
+    if (!getuser || getuser.password !== password) {
+      return res.status(404).json({ message: "User does not exist or is using an incorrect password" });
+    }
+    const jwtConfig = {
+      expiresIn: "7d",
+      algorithm: "HS256",
+    }
+      const token = jwt.sign({ CPF: getuser.CPF }, JWT_SECRET, jwtConfig);
+      res.setHeader('Authorization', token);
+      return  res.status(200).json({ token });
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  async getLogin(req,res) {
+    const token = req.headers.authorization;
+    console.log(token)
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token could not found' });
+    }
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const user = await findUser(decoded.CPF);
+      if (!user) {
+        return res.status(401).json({ message: 'user not found!' });
+      }
+      req.user = user;
+    } catch (err) {
+      console.log("erro => ", err);
+      return res.status(401).json({ message: err.message });
     }
   }
   async resetDatabase(req, res) {
@@ -72,5 +99,6 @@ class UserController {
     }
   }
 }
+
 
 module.exports = UserController;
