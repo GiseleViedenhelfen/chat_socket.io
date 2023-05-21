@@ -1,22 +1,23 @@
 const express = require('express');
 const userRoutes = require('./routes/userRoutes');
-const http = require('http');
-const socketIO = require('socket.io');
-
 const app = express();
+const cors = require('cors');
+const http = require('http').createServer(app);
 app.use(express.json());
 
-const server = http.createServer(app);
-// const io = socketIO('socket.io')(http, {
+app.use(cors());
+
+// const io = require('socket.io')(http, {
 //   cors: {
 //     origin: 'http://localhost:3000',
 //     methods: ['GET', 'POST'], 
 //   },
 // });
-// app.get('/', (req, res) => {
-//   res.send('/index.html');
-// });
+
+
+// require('../src/socket/chat')(io);
+
 app.use(userRoutes);
-server.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000 com mongo');
+http.listen(3001, () => {
+  console.log('Servidor rodando na porta 3001');
 });

@@ -55,8 +55,9 @@ class UserController {
   async login(req, res) {
     try {
       const { CPF, password } = req.body;
+      console.log(CPF, password);
       const getuser = await findUser(CPF);
-
+      console.log(getuser);
     if (!getuser || getuser.password !== password) {
       return res.status(404).json({ message: "User does not exist or is using an incorrect password" });
     }
