@@ -55,9 +55,7 @@ class UserController {
   async login(req, res) {
     try {
       const { CPF, password } = req.body;
-      console.log(CPF, password);
       const getuser = await findUser(CPF);
-      console.log(getuser);
     if (!getuser || getuser.password !== password) {
       return res.status(404).json({ message: "User does not exist or is using an incorrect password" });
     }
@@ -67,15 +65,13 @@ class UserController {
     }
       const token = jwt.sign({ CPF: getuser.CPF }, JWT_SECRET, jwtConfig);
       res.setHeader('Authorization', token);
-      return  res.status(200).json({ token });
+      return  res.status(200).json({ token: token, username: getuser.name });
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
   async getLogin(req,res) {
     const token = req.headers.authorization;
-    console.log(token)
-
     if (!token) {
       return res.status(401).json({ error: 'Token could not found' });
     }

@@ -2,8 +2,7 @@
 module.exports = (io) => io.on('connection', (socket) => {
   socket.on('connect', () => {
     //considerar pessoa conectada
-
-    socket.broadcast.emit('serverMessage', `${socket.id} acabou de se conectar!`);
+    console.log(`server message: ${socket.id} user just connected!`);
   });
   socket.on('clientMessage', (message) => {
     // mensagens usuário
