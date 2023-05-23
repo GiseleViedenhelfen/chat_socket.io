@@ -7,7 +7,7 @@ import ChatContext from "../context/chatContext";
 
 const Homepage = () => {
   const [messages, setMessages] = useState([]);
-  const { socket, setSocket} = useContext(ChatContext)
+  const { setSocket } = useContext(ChatContext)
   const [token, setToken] = useState("");
   const [user, setUser] = useState('');
   const connectToSocket = () => {
@@ -31,7 +31,6 @@ const Homepage = () => {
 
   return (
     <div className="chat">
-      {console.log("token estado", socket)}
       <OnlineUser />
       <div className="chat__main">
         <ChatBody messages={messages} />

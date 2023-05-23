@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/user";
 
@@ -6,9 +6,7 @@ const Login = () => {
   const [CPF, setCPF] = useState("");
   const [password, setPassword] = useState("");
   const [userNotFound, setUserNotFound] = useState(false);
-
   const navigate = useNavigate();
-  useEffect(() => {}, []);
 
   const handleClick = async () => {
     const logApi = await login(CPF, password);

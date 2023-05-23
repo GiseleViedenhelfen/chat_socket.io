@@ -16,21 +16,25 @@ const socketIO = require('socket.io')(http,
 }
 );
 
+let onlineUsers = [] 
 socketIO.on('connection', (socket) => {
-  let users = []
   const { query } = socket.handshake
   console.log(`server message: user ${query.userName} just connected!`);
-  users.push({name: query.userName, token: query.token})
-  console.log('array users => ', users);
+  const checkUser = onlineUsers.filter((user) => user.name === query.userName);
+  if (checkUser.length > 0) {
+    console.log('usuário já está online em outra aba');
+  } else {
+    onlineUsers.push({name: query.userName, token: query.token, socketID: socket.id})
+  } 
+  console.log('array users => ', onlineUsers);
+  socketIO.emit('onlineUsers', onlineUsers);
 
   socket.on('disconnect', () => {
-    console.log(`server message: user  disconnected`);
-    socket.disconnect();
+    console.log(`server message: ${socket.id} user  disconnected`);
+    onlineUsers = onlineUsers.filter((user) => user.socketID !== socket.id);
+    console.log(onlineUsers);
+    socketIO.emit('onlineUsers',onlineUsers);
   });
-  // socket.on('login', (socket) => {
-  //  console.log(`usuário ${socket.id} fez login`)
-  //  console.log(socket);
-  // })
 });
 
 app.use(userRoutes);

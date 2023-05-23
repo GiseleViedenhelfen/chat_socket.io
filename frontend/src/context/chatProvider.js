@@ -4,7 +4,7 @@ import ChatContext from './chatContext';
 
 export default function ChatProvider({ children }) {
 
-  const [socket, setSocket] = useState(null)
+  const [socket, setSocket] = useState(null);
 
   const context = useMemo(() => ({
 

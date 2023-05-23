@@ -1,19 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-const ChatBody = ({ messages, socket }) => {
-  const [userOnline, setUsersOnline] = useState([])
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import ChatContext from "../context/chatContext";
+const ChatBody = ({ messages }) => {
+  const { socket } = useContext(ChatContext);
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   socket.on('disconnect', (data) => setUsersOnline([...messages, data]));
-  // }, [socket, messages]);
   const handleLeaveChat = () => {
- 
-    localStorage.removeItem('userName');
-    navigate('/');
-    // socket.on('logout', () => {
-    //   socket.disconnect();
-    // })
-    // window.location.reload();
+    console.log(socket);
+    localStorage.removeItem("userName");
+    socket.disconnect();
+    navigate("/");
   };
 
   return (
@@ -25,10 +20,9 @@ const ChatBody = ({ messages, socket }) => {
         </button>
       </header>
 
-      {/*This shows messages sent from you*/}
       <div className="message__container">
-         {messages.map((message) =>
-          message.name === localStorage.getItem('userName') ? (
+        {messages.map((message) =>
+          message.name === localStorage.getItem("userName") ? (
             <div className="message__chats" key={message.id}>
               <p className="sender__name">You</p>
               <div className="message__sender">
