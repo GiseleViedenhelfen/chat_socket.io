@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import ChatContext from "../context/chatContext";
 
+
 const OnlineUser = () => {
   const [users, setUsers] = useState([]);
   const [usersToChat, setUsersToChat] = useState([]);
-  const { socket } = useContext(ChatContext);
+  const {selectedUser, socket, setCurrentUser, setSelectedUser } = useContext(ChatContext);
   useEffect(() => {
     socket &&
       socket.on("onlineUsers", (onlineUsers) => {
@@ -12,25 +13,45 @@ const OnlineUser = () => {
       });
     const getUsersToChat = () => {
       const getCurrentUser = JSON.parse(localStorage.getItem("userName"));
-      console.log(getCurrentUser);
+      setCurrentUser(getCurrentUser)
       users.length > 0 &&
         setUsersToChat(
           users.filter((user) => user.name !== getCurrentUser.username)
         );
     };
     getUsersToChat();
+    // getMessages()
   }, [socket, users]);
+  
+  // const selectedUser = (targetUser) => {
+  //   socket.emit('privateChat', { content: 'room', to: targetUser });
+   
+  // // socket.emit('privateChat', targetUser)
+  // }
+  // const getMessages = () => {
+  //   socket &&
+  //   socket.on('privateChat', (data) => {
+  //     console.log(data);
+  //   })
+  // }
+
 
   return (
     <div className="chat__sidebar">
-      <h2>Open Chat</h2>
       <div>
-        <h4 className="chat__header">ACTIVE USERS</h4>
-        <div className="chat__users">
+        {/* {console.log(selectedUser)} */}
+        <h4 className="chat__header">Usuários Online</h4>
+        <ul className="chat__users">
           {usersToChat.map((user) => (
-            <p key={user.token}>{user.name}</p>
+            <li key={user.token}             
+            >
+              <button
+              onClick={() => {setSelectedUser(user)}}>
+              {user.name}
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );

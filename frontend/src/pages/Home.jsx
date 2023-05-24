@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import OnlineUser from "../components/onlineUsers";
-import ChatBody from "../components/chatBody";
+import ChatHeader from "../components/chatHeader";
 import ChatFooter from "../components/chatFooter";
+import ChatBody from "../components/ChatBody";
 import socketIO from "socket.io-client";
 import ChatContext from "../context/chatContext";
 
@@ -33,8 +34,10 @@ const Homepage = () => {
     <div className="chat">
       <OnlineUser />
       <div className="chat__main">
-        <ChatBody messages={messages} />
+        <ChatHeader />
+        <ChatBody />
         <ChatFooter />
+        
       </div>
     </div>
   );

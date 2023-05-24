@@ -5,6 +5,7 @@ const cors = require('cors');
 const http = require('http').createServer(app);
 app.use(express.json());
 
+
 app.use(cors());
 const PORT = 3001
 const socketIO = require('socket.io')(http,
@@ -16,7 +17,8 @@ const socketIO = require('socket.io')(http,
 }
 );
 
-let onlineUsers = [] 
+let onlineUsers = []
+
 socketIO.on('connection', (socket) => {
   const { query } = socket.handshake
   console.log(`server message: user ${query.userName} just connected!`);
@@ -29,12 +31,36 @@ socketIO.on('connection', (socket) => {
   console.log('array users => ', onlineUsers);
   socketIO.emit('onlineUsers', onlineUsers);
 
-  socket.on('disconnect', () => {
+  socket.on('disconnect', (roomID) => {
     console.log(`server message: ${socket.id} user  disconnected`);
     onlineUsers = onlineUsers.filter((user) => user.socketID !== socket.id);
-    console.log(onlineUsers);
+    socket.leave(roomID)
     socketIO.emit('onlineUsers',onlineUsers);
   });
+  socket.on('inviteToJoinRoom', ({content, to, room}) => {
+    const sender = socket.id;
+    const senderData = onlineUsers.filter((user) => user.socketID === sender)
+    console.log(senderData);
+    const receiver = to.socketID;
+    if (senderData) {
+      socket.join(room);
+      socket.to(receiver).emit("inviteToJoinRoom", {
+        content,
+        room,
+        from: senderData[0].name,
+        to: to.name
+      });
+    } else {
+      console.log('Sender is no longer online. Invite not sent.');
+    }
+    // socket.join(room);
+    // socket.to(receiver).emit("inviteToJoinRoom", {
+    //   content,
+    //   room,
+    //   from: senderData[0].name,
+    //   to: to.name
+    // });
+  })
 });
 
 app.use(userRoutes);

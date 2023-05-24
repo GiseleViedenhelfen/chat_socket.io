@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ChatContext from "../context/chatContext";
+const { v4: uuidv4 } = require('uuid');
 
 const ChatFooter = () => {
+  const { socket,  currentUser, selectedUser, setRoomID } = useContext(ChatContext);
   const [message, setMessage] = useState('');
+ // const selectedUser = (targetUser) => {
+  //   socket.emit('privateChat', { content: 'room', to: targetUser });
+   
+  // // socket.emit('privateChat', targetUser)
+  // }
+  // const getMessages = () => {
+  //   socket &&
+  //   socket.on('privateChat', (data) => {
+  //     console.log(data);
+  //   })
+  // }
+  const handleSendMessage = () => {
+    const generateRoom = () => uuidv4();
+    const roomToTalk = generateRoom()
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    // if (message.trim() && localStorage.getItem('userName')) {
-    //   socket.emit('message', {
-    //     text:`mensagem: ${message}` ,
-    //     name: localStorage.getItem('userName'),
-    //     id: `${socket.id}${Math.random()}`,
-    //     socketID: socket.id,
-    //   })
-    // }
+  if(message.trim() && socket) {
+    setRoomID(roomToTalk)
+    socket.emit('joinRoom', { content: message, to: selectedUser, room: roomToTalk });
+  }
     setMessage('');
   };
   return (
@@ -23,9 +34,13 @@ const ChatFooter = () => {
           placeholder="Write message"
           className="message"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={({target}) => setMessage(target.value)}
         />
-        <button className="sendBtn">SEND</button>
+        <button
+        type="button"
+        className="sendBtn"
+        onClick={handleSendMessage}
+        >SEND</button>
       </form>
     </div>
   );
