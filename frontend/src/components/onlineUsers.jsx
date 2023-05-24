@@ -39,7 +39,7 @@ const OnlineUser = () => {
   return (
     <div className="chat__sidebar">
       <div>
-        {/* {console.log(selectedUser)} */}
+        {console.log(users)}
         <h4 className="chat__header">Usuários Online</h4>
         <ul className="chat__users">
           {usersToChat.map((user) => (

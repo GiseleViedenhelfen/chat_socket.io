@@ -17,49 +17,40 @@ const socketIO = require('socket.io')(http,
 }
 );
 
-let onlineUsers = []
 
+let onlineUsers = []
 socketIO.on('connection', (socket) => {
   const { query } = socket.handshake
   console.log(`server message: user ${query.userName} just connected!`);
   const checkUser = onlineUsers.filter((user) => user.name === query.userName);
+
   if (checkUser.length > 0) {
     console.log('usuário já está online em outra aba');
   } else {
     onlineUsers.push({name: query.userName, token: query.token, socketID: socket.id})
   } 
-  console.log('array users => ', onlineUsers);
   socketIO.emit('onlineUsers', onlineUsers);
 
-  socket.on('disconnect', (roomID) => {
+  socket.on('disconnect', () => {
     console.log(`server message: ${socket.id} user  disconnected`);
-    onlineUsers = onlineUsers.filter((user) => user.socketID !== socket.id);
-    socket.leave(roomID)
+    onlineUsers = onlineUsers.filter((user) => user.name !== query.userName);
+    console.log(onlineUsers);
     socketIO.emit('onlineUsers',onlineUsers);
   });
-  socket.on('inviteToJoinRoom', ({content, to, room}) => {
-    const sender = socket.id;
-    const senderData = onlineUsers.filter((user) => user.socketID === sender)
-    console.log(senderData);
+  socket.on('privateChat', ({content, to,  from}) => {
+    const senderData = onlineUsers.filter((user) => user.name === from.username)
     const receiver = to.socketID;
-    if (senderData) {
-      socket.join(room);
-      socket.to(receiver).emit("inviteToJoinRoom", {
+
+      socket.to(receiver).emit("receivedMessage", {
         content,
-        room,
         from: senderData[0].name,
         to: to.name
       });
-    } else {
-      console.log('Sender is no longer online. Invite not sent.');
-    }
-    // socket.join(room);
-    // socket.to(receiver).emit("inviteToJoinRoom", {
-    //   content,
-    //   room,
-    //   from: senderData[0].name,
-    //   to: to.name
-    // });
+      socket.to(senderData.socketID).emit("sendedMessage", {
+        content,
+        from: senderData[0].name,
+        to: to.name
+      })
   })
 });
 

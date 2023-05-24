@@ -11,6 +11,7 @@ const Homepage = () => {
   const { setSocket } = useContext(ChatContext)
   const [token, setToken] = useState("");
   const [user, setUser] = useState('');
+  // const [socket, setSocket] = useState(null)
   const connectToSocket = () => {
     const connectSocket = socketIO.connect("http://localhost:3001", {
       query: { token: token, userName: user },
@@ -27,8 +28,6 @@ const Homepage = () => {
       connectToSocket();
     }
   }, [token]);
-
-  // socket.on('messageResponse', (data) => setMessages([...messages, data]));
 
   return (
     <div className="chat">

@@ -1,28 +1,20 @@
 import React, { useState, useContext } from 'react';
 import ChatContext from "../context/chatContext";
-const { v4: uuidv4 } = require('uuid');
 
 const ChatFooter = () => {
-  const { socket,  currentUser, selectedUser, setRoomID } = useContext(ChatContext);
+  const {socket,  currentUser, selectedUser, setRoomID } = useContext(ChatContext);
   const [message, setMessage] = useState('');
- // const selectedUser = (targetUser) => {
-  //   socket.emit('privateChat', { content: 'room', to: targetUser });
-   
-  // // socket.emit('privateChat', targetUser)
-  // }
-  // const getMessages = () => {
-  //   socket &&
-  //   socket.on('privateChat', (data) => {
-  //     console.log(data);
-  //   })
-  // }
-  const handleSendMessage = () => {
-    const generateRoom = () => uuidv4();
-    const roomToTalk = generateRoom()
 
-  if(message.trim() && socket) {
-    setRoomID(roomToTalk)
-    socket.emit('joinRoom', { content: message, to: selectedUser, room: roomToTalk });
+  const handleSendMessage = () => {   
+    if(message.trim() && socket) {
+    // const roomToTalk = `${currentUser.username}${selectedUser.name}`
+    // setRoomID(roomToTalk)
+    socket.emit('privateChat', {
+      content: message,
+      to: selectedUser,
+      // room: roomToTalk,
+      from: currentUser
+    });
   }
     setMessage('');
   };
