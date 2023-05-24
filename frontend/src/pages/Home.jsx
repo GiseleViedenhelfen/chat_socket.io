@@ -7,11 +7,9 @@ import socketIO from "socket.io-client";
 import ChatContext from "../context/chatContext";
 
 const Homepage = () => {
-  const [messages, setMessages] = useState([]);
   const { setSocket } = useContext(ChatContext)
   const [token, setToken] = useState("");
   const [user, setUser] = useState('');
-  // const [socket, setSocket] = useState(null)
   const connectToSocket = () => {
     const connectSocket = socketIO.connect("http://localhost:3001", {
       query: { token: token, userName: user },

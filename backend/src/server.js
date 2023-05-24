@@ -17,7 +17,6 @@ const socketIO = require('socket.io')(http,
 }
 );
 
-
 let onlineUsers = []
 socketIO.on('connection', (socket) => {
   const { query } = socket.handshake
@@ -40,13 +39,12 @@ socketIO.on('connection', (socket) => {
   socket.on('privateChat', ({content, to,  from}) => {
     const senderData = onlineUsers.filter((user) => user.name === from.username)
     const receiver = to.socketID;
-
       socket.to(receiver).emit("receivedMessage", {
         content,
         from: senderData[0].name,
         to: to.name
       });
-      socket.to(senderData.socketID).emit("sendedMessage", {
+      socket.emit("sendedMessage", {
         content,
         from: senderData[0].name,
         to: to.name
