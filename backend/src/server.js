@@ -36,20 +36,20 @@ socketIO.on('connection', (socket) => {
     console.log(onlineUsers);
     socketIO.emit('onlineUsers',onlineUsers);
   });
-  socket.on('privateChat', ({content, to,  from}) => {
+  socket.on('message', ({room, content, to, from}) => {
     const senderData = onlineUsers.filter((user) => user.name === from.username)
-    const receiver = to.socketID;
-      socket.to(receiver).emit("receivedMessage", {
-        content,
-        from: senderData[0].name,
-        to: to.name
-      });
-      socket.emit("sendedMessage", {
-        content,
-        from: senderData[0].name,
-        to: to.name
-      })
+    console.log(`"${content}" para ${to.name} na sala ${room}`);
+    console.log(room);
+    console.log(to);
+    // socket.to(to.socketID).emit('dataMessage', {content,room, from: senderData[0].name,
+    //   to: to.name})
+      socket.emit('dataMessage', { content, ...room, from: senderData[0].name, to: to.name });
   })
+  socket.on('joinPrivateRoom', (roomID) => {
+    // console.log(roomID);
+    console.log(`entrou na sala ${roomID}`);
+    socket.join(roomID);
+  });
 });
 
 app.use(userRoutes);

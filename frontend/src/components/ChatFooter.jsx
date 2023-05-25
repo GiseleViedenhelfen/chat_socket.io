@@ -2,16 +2,17 @@ import React, { useState, useContext } from 'react';
 import ChatContext from "../context/chatContext";
 
 const ChatFooter = () => {
-  const {socket,  currentUser, selectedUser } = useContext(ChatContext);
+  const {roomID, socket,  currentUser, selectedUser } = useContext(ChatContext);
   const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {   
     if(message.trim() && socket) {
-    socket.emit('privateChat', {
+    socket.emit('message', {
+      room: roomID,
       content: message,
       to: selectedUser,
       from: currentUser
-    });
+    })
   }
     setMessage('');
   };
