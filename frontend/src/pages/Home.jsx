@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import OnlineUser from "../components/onlineUsers";
-import ChatHeader from "../components/chatHeader";
-import ChatFooter from "../components/chatFooter";
+import ChatHeader from "../components/ChatHeader";
+import ChatFooter from "../components/ChatFooter";
 import ChatBody from "../components/ChatBody";
 import socketIO from "socket.io-client";
 import ChatContext from "../context/chatContext";
+import "./Home.css";
 
 const Homepage = () => {
   const { setSocket } = useContext(ChatContext)
@@ -29,12 +30,13 @@ const Homepage = () => {
 
   return (
     <div className="chat">
-      <OnlineUser />
+      <div className="chat__nav">
+        <OnlineUser />
+      </div>
       <div className="chat__main">
         <ChatHeader />
         <ChatBody />
-        <ChatFooter />
-        
+        <ChatFooter />      
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import ChatContext from "../context/chatContext";
 const ChatHeader = () => {
-  const { socket } = useContext(ChatContext);
+  const { selectedUser, socket } = useContext(ChatContext);
   const navigate = useNavigate();
   const handleLeaveChat = () => {
     socket.disconnect();
@@ -12,9 +12,11 @@ const ChatHeader = () => {
 
   return (
     <>
+    {console.log(selectedUser)}
       <header className="chat__mainHeader">
+        {selectedUser === null ? <h2>socket.io chat</h2> : <h2>{`${selectedUser.name}`}</h2>}    
         <button className="leaveChat__btn" onClick={handleLeaveChat}>
-          LEAVE CHAT
+          SAIR
         </button>
       </header>
     </>

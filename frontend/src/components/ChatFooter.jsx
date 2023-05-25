@@ -2,17 +2,14 @@ import React, { useState, useContext } from 'react';
 import ChatContext from "../context/chatContext";
 
 const ChatFooter = () => {
-  const {socket,  currentUser, selectedUser, setRoomID } = useContext(ChatContext);
+  const {socket,  currentUser, selectedUser } = useContext(ChatContext);
   const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {   
     if(message.trim() && socket) {
-    // const roomToTalk = `${currentUser.username}${selectedUser.name}`
-    // setRoomID(roomToTalk)
     socket.emit('privateChat', {
       content: message,
       to: selectedUser,
-      // room: roomToTalk,
       from: currentUser
     });
   }
@@ -20,19 +17,20 @@ const ChatFooter = () => {
   };
   return (
     <div className="chat__footer">
-      <form className="form" onSubmit={handleSendMessage}>
+      <form className="message__form" onSubmit={handleSendMessage}>
         <input
           type="text"
           placeholder="Write message"
-          className="message"
+          className="message__input"
           value={message}
           onChange={({target}) => setMessage(target.value)}
         />
         <button
         type="button"
-        className="sendBtn"
+        className="send__button"
         onClick={handleSendMessage}
-        >SEND</button>
+        disabled= {selectedUser === null}
+        >ENVIAR</button>
       </form>
     </div>
   );

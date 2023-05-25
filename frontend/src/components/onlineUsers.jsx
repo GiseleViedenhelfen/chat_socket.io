@@ -5,7 +5,7 @@ import ChatContext from "../context/chatContext";
 const OnlineUser = () => {
   const [users, setUsers] = useState([]);
   const [usersToChat, setUsersToChat] = useState([]);
-  const {selectedUser, socket, setCurrentUser, setSelectedUser } = useContext(ChatContext);
+  const {socket, setCurrentUser, setSelectedUser } = useContext(ChatContext);
   useEffect(() => {
     socket &&
       socket.on("onlineUsers", (onlineUsers) => {
@@ -19,21 +19,10 @@ const OnlineUser = () => {
           users.filter((user) => user.name !== getCurrentUser.username)
         );
     };
+    usersToChat.length === 0 && setSelectedUser(null)
     getUsersToChat();
-    // getMessages()
   }, [socket, users]);
   
-  // const selectedUser = (targetUser) => {
-  //   socket.emit('privateChat', { content: 'room', to: targetUser });
-   
-  // // socket.emit('privateChat', targetUser)
-  // }
-  // const getMessages = () => {
-  //   socket &&
-  //   socket.on('privateChat', (data) => {
-  //     console.log(data);
-  //   })
-  // }
 
 
   return (

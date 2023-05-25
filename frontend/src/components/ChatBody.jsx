@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import ChatContext from "../context/chatContext";
 
 const ChatBody = () => {
-  const {socket, currentUser, selectedUser } = useContext(ChatContext);
-  const [roomInvite, setRoomInvite] = useState(false);
+  const {socket, selectedUser } = useContext(ChatContext);
+  // const [roomInvite, setRoomInvite] = useState(false);
   const [receivedmMessages, setReceivedmMessages] = useState([])
   const [sentedMessages, setSentedMessages] = useState([])
   // const [sender, setSender] = useState(null)
@@ -19,12 +19,11 @@ const ChatBody = () => {
       }
   
 return(
-  <div>
-    <p>mensagens</p>
+  <div className="chat__body">
     {console.log('mensagem recebida', receivedmMessages)}
-    {receivedmMessages.length > 0 && receivedmMessages.map((message) => <p>{`${selectedUser?.name}: ${message}`}</p>)}
+    {receivedmMessages.length > 0 && receivedmMessages.map((message) => <p className='received__message'>{`${selectedUser?.name}: ${message}`}</p>)}
     {console.log('mensagem enviada => ', sentedMessages)}
-    {sentedMessages.length > 0 && sentedMessages.map((message) => <p>{`you: ${message}`}</p>)}
+    {sentedMessages.length > 0 && sentedMessages.map((message) => <p className='sented__message'>{`you: ${message}`}</p>)}
   </div>
 )
 }
