@@ -1,56 +1,54 @@
 import React, {useContext, useEffect, useState} from 'react';
 import ChatContext from "../context/chatContext";
+import ChatHeader from './ChatHeader';
+import ChatFooter from './ChatFooter';
+import OnlineUsers from './OnlineUsers';
+import { getMsgs, sendMsg } from '../localStorage/utils';
 
 const ChatBody = () => {
   const {avaibleRooms, chat, setChat, roomID,socket, selectedUser } = useContext(ChatContext);
-  const [receivedmMessages, setReceivedmMessages] = useState([])
-  const [sentedMessages, setSentedMessages] = useState([])
-  const [currentRoom, setCurrentRoom] = useState(null)
-  // const [separateRooms, setSeparateRooms] = useState(false)
-
+  const [currentRoom, setCurrentRoom] = useState(null);
+  const [on, setOn] = useState(false)
+ 
   useEffect(() => {
-    getMessages()
-  }, [socket, sentedMessages, receivedmMessages])
+    const currentPath = window.location.pathname;
+    const room =  currentPath.split('/')[currentPath.split('/').length - 1]
+    setCurrentRoom(room);
+    if (socket) { 
+      if (!on) {
+        setOn(true)
+        socket.on('dataMessage',(data) =>{
+        const sender = data.from;
+        const receiver = data.to;
+        const chatRoom = data.room
+        const lastRoom = currentRoom
+        const msg = `${sender}: ${data.content}`
+          // sendMsg(msg, chatRoom)
+        
+      })
+    }
+    
+    }
   
-      const getMessages = () => {
-        if (avaibleRooms?.length > 0) {
-          console.log(avaibleRooms);
-          const chatContainer = avaibleRooms.reduce((result, item) => {
-            result[item] = [];
-            return result;
-          }, {})
-          setChat(chatContainer);
-        }
-        if (socket) { 
-          socket.on('dataMessage', (data) =>{
-            console.log(data);
-            const sender = data.from;
-            const receiver = data.to;
-            // const separateUsers = data.room[0].split(/(?=[A-Z])/);
-            // const checkRoom = separateUsers.includes(sender) && separateUsers.includes(receiver);
-            // console.log(checkRoom);
-            // console.log(currentRoom);
-            // console.log(data.content);
-           
-          })
-          // socket.on('sentedMessage', (data) => {
-          //   const sender = data.from;
-          //   const receiver = data.to;
-          //   const separateUsers = data.room[0].split(/(?=[A-Z])/);
-          //   const checkRoom = separateUsers.includes(sender) && separateUsers.includes(receiver);
-          //   console.log(checkRoom);
-          //   console.log(data.content);
-          // })
-        }
-      }
-  
-return(
-  <div className="chat__body">
 
+  }, [on, chat, socket])
+
+
+getMsgs()
+    
+return(
+  <div className="chat">
+  <OnlineUsers />
+  <div className="chat__main">
+    <ChatHeader />
+    {/* {filteredChat.length > 0 && filteredChat.map((message) => <p>{message}</p>)} */}
+    <div>corpo</div>
+    <ChatFooter />
     {/* {console.log('mensagem recebida', receivedmMessages)} */}
-    {receivedmMessages.length > 0 && receivedmMessages.map((message) => <p className='received__message'>{`${selectedUser?.name}: ${message}`}</p>)}
+    {/* {chat.length > 0 && chat.map((message) => <p className='received__message'>{`${selectedUser?.name}: ${message}`}</p>)} */}
     {/* {console.log('mensagem enviada => ', sentedMessages)} */}
-    {sentedMessages.length > 0 && sentedMessages.map((message) => <p className='sented__message'>{`you: ${message}`}</p>)}
+    {/* {chat.length > 0 && chat.map((message) => <p className='sented__message'>{`you: ${message}`}</p>)} */}
+  </div>
   </div>
 )
 }

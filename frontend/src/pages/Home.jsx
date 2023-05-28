@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import OnlineUser from "../components/onlineUsers";
-import ChatHeader from "../components/ChatHeader";
-import ChatFooter from "../components/ChatFooter";
+import OnlineUsers from "../components/OnlineUsers";
 import ChatBody from "../components/ChatBody";
 import socketIO from "socket.io-client";
 import ChatContext from "../context/chatContext";
@@ -29,15 +27,9 @@ const Homepage = () => {
   }, [token]);
 
   return (
-    <div className="chat">
-      <div className="chat__nav">
-        <OnlineUser />
-      </div>
-      <div className="chat__main">
-        <ChatHeader />
-        <ChatBody />
-        <ChatFooter />      
-      </div>
+    <div className="chat">  
+        <OnlineUsers />
+        <h2>clique em alguém para iniciar o chat</h2>
     </div>
   );
 };

@@ -8,7 +8,10 @@ export default function ChatProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [roomID, setRoomID] = useState(null);
   const [avaibleRooms, setAvaibleRooms] = useState(null);
-  const [chat, setChat] = useState([])
+  const [chat, setChat] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [usersToChat, setUsersToChat] = useState([]);
+
   const context = useMemo(() => ({
     roomID,
     chat,
@@ -16,17 +19,23 @@ export default function ChatProvider({ children }) {
     currentUser,
     selectedUser,
     avaibleRooms,
+    users,
+    usersToChat,
     setSocket,
     setCurrentUser,
     setSelectedUser,
     setAvaibleRooms,
     setRoomID,
-    setChat
-  }), [socket, currentUser, selectedUser, roomID, avaibleRooms, chat]);
+    setChat,
+    setUsers,
+    setUsersToChat,
+  }), [socket, currentUser, selectedUser, roomID,
+    avaibleRooms, chat, users, usersToChat, setSocket, setCurrentUser,
+    setSelectedUser, setAvaibleRooms, setRoomID, setChat, setUsers, setUsersToChat]);
 
   return (
-    <ChatContext.Provider value={ context }>
-      { children }
+    <ChatContext.Provider value={context}>
+      {children}
     </ChatContext.Provider>
   );
 }

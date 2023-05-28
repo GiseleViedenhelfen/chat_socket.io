@@ -12,7 +12,6 @@ const ChatHeader = () => {
 
   return (
     <>
-    {/* {console.log(selectedUser)} */}
       <header className="chat__mainHeader">
         {selectedUser === null ? <h2>socket.io chat</h2> : <h2>{`${selectedUser.name}`}</h2>}    
         <button className="leaveChat__btn" onClick={handleLeaveChat}>

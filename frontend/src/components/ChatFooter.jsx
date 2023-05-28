@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import ChatContext from "../context/chatContext";
+import { sendMsg } from '../localStorage/utils';
 
 const ChatFooter = () => {
   const {roomID, socket,  currentUser, selectedUser } = useContext(ChatContext);
@@ -7,6 +8,7 @@ const ChatFooter = () => {
 
   const handleSendMessage = () => {   
     if(message.trim() && socket) {
+      sendMsg(`${currentUser.username}: ${message}`, roomID)
     socket.emit('message', {
       room: roomID,
       content: message,
