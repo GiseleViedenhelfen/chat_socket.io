@@ -37,16 +37,25 @@ socketIO.on('connection', (socket) => {
     socketIO.emit('onlineUsers',onlineUsers);
   });
   socket.on('message', ({room, content, to, from}) => {
+    console.log('from =>', from);
     const senderData = onlineUsers.filter((user) => user.name === from.username)
     console.log(`"${content}" para ${to.name} na sala ${room}`);
     console.log(room);
-    console.log(to);
-    // socket.to(to.socketID).emit('dataMessage', {content,room, from: senderData[0].name,
-    //   to: to.name})
-      socket.emit('dataMessage', { content, ...room, from: senderData[0].name, to: to.name });
+    console.log(to.socketID);
+      socket.emit('dataMessage', {
+        content,
+        room: room,
+        from: senderData[0].name,
+        to: to.name 
+      });
+      socket.to(to.socketID).emit('receivedMessage', {
+        content,
+        room: room,
+        from: senderData[0].name,
+        to: to.name 
+      })
   })
   socket.on('joinPrivateRoom', (roomID) => {
-    // console.log(roomID);
     console.log(`entrou na sala ${roomID}`);
     socket.join(roomID);
   });

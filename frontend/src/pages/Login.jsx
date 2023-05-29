@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/user";
+import ChatContext from "../context/chatContext";
 
 const Login = () => {
   const [CPF, setCPF] = useState("");
   const [password, setPassword] = useState("");
+  const {setCurrentUser} = useContext(ChatContext)
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
@@ -15,6 +17,7 @@ const Login = () => {
     } else {
       setUserNotFound(false);
      localStorage.setItem("userName", JSON.stringify(logApi))
+     setCurrentUser(logApi)
       navigate("/home");
     }
   };

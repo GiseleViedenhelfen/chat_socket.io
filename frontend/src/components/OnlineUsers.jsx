@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import ChatContext from "../context/chatContext";
+import { useNavigate } from "react-router-dom";
 
-const OnlineUser = () => {
-  const [users, setUsers] = useState([]);
-  const [usersToChat, setUsersToChat] = useState([]);
+const OnlineUsers = () => {
+  const {users, setUsers, usersToChat, setUsersToChat} = useContext(ChatContext);
+  const navigate = useNavigate();
   const {
+    roomID,
     currentUser,
     avaibleRooms,
     setAvaibleRooms,
@@ -20,7 +22,6 @@ const OnlineUser = () => {
       });
     const getUsersToChat = () => {
       const getCurrentUser = JSON.parse(localStorage.getItem("userName"));
-      setCurrentUser(getCurrentUser);
       users.length > 0 &&
         setUsersToChat(
           users.filter((user) => user.name !== getCurrentUser.username)
@@ -29,24 +30,27 @@ const OnlineUser = () => {
     usersToChat.length === 0 && setSelectedUser(null);
     getUsersToChat();
     createRooms();
+
   }, [socket, users]);
 
   const createRooms = () => {
     const getNames = users.map((user) => user.name);
-    const combinations = getNames.flatMap((name, index) =>
-      getNames.slice(index + 1).map((otherName) => name + otherName)
+    const combinations = getNames.sort().flatMap((name, index) =>
+      getNames.slice(index + 1).map((otherName) => `${name}-${otherName}`)
     );
-    setAvaibleRooms(combinations);
+    setAvaibleRooms(combinations.sort());
   };
   const handleClick = (user) => {
-    const sender = currentUser.username;
+    const sender = JSON.parse(localStorage.getItem("userName"));
     const receiver = user.name;
     const getRoom = avaibleRooms.filter(
-      (room) => room.includes(sender) && room.includes(receiver)
+      (room) => room.includes(sender.username) && room.includes(receiver)
     );
     setSelectedUser(user);
-    setRoomID(getRoom)
-    socket.emit('joinPrivateRoom', getRoom, currentUser)
+    setRoomID(getRoom[0])
+    // navigate("/");
+    navigate(`/home/${getRoom}`)
+    socket.emit('joinPrivateRoom', getRoom, sender.username)
   };
   return (
     <div className="chat__sidebar">
@@ -69,4 +73,4 @@ const OnlineUser = () => {
     </div>
   );
 };
-export default OnlineUser;
+export default OnlineUsers;
