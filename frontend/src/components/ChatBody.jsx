@@ -38,17 +38,32 @@ const ChatBody = () => {
         setOn(true)
         socket.on('dataMessage',(data) =>{  
           const messages = getMsgs()
-          const updatedChat = messages[room]
+          console.log(messages);
+          if (messages[room]) {
+            const updatedChat = messages[room]
+            console.log(updatedChat);
             setChat([...updatedChat, `${data.from}: ${data.content}`])
-        registerMsg(`${data.from}: ${data.content}`, data.room)
-        console.log('111')
+            registerMsg(`${data.from}: ${data.content}`, data.room)
+            console.log('111')
+          } else {
+            messages[room] = []
+            setChat([`${data.from}: ${data.content}`])
+            registerMsg(`${data.from}: ${data.content}`, data.room)
+          }
       })
       socket.on('receivedMessage', (data) => {
         const messages = getMsgs()
-        const updatedChat = messages[room]
+        console.log(messages);
+        if (messages[room]) {
+          const updatedChat = messages[room]
           setChat([...updatedChat, `${data.from}: ${data.content}`])
-        registerMsg(`${data.from}: ${data.content}`, data.room)
-        console.log('222')
+          registerMsg(`${data.from}: ${data.content}`, data.room)
+          console.log('222')
+        } else {
+          messages[room] = []
+          setChat([`${data.from}: ${data.content}`])
+          registerMsg(`${data.from}: ${data.content}`, data.room)
+        }
       } )
     }  
     }
