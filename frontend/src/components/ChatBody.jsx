@@ -8,24 +8,46 @@ import { getMsgs, registerMsg } from '../localStorage/utils';
 const ChatBody = () => {
   const {avaibleRooms, setChat, roomID,socket, selectedUser, chat } = useContext(ChatContext);
   const [currentRoom, setCurrentRoom] = useState(null);
+  const [messages, setMessages] = useState({})
   const [on, setOn] = useState(false);
-  const [render, setRender] = useState(false)
+  const currentPath = window.location.pathname;
+  
   useEffect(() => {
-    const currentPath = window.location.pathname;
-    const room =  currentPath.split('/')[currentPath.split('/').length - 1]
-    
+    if (currentPath) {
+      const room =  currentPath.split('/')[currentPath.split('/').length - 1];
+      const backupMsgs = getMsgs()
+      setMessages(backupMsgs)
+      if (room in backupMsgs) {
+        setChat(backupMsgs[room])
+      } else {
+        backupMsgs[room] = []
+        console.log(backupMsgs)
+        setChat(backupMsgs[room])
+      }
+
+    }
+  },[currentPath, setChat])
+
+
+  useEffect(() => {
+
+    const room =  currentPath.split('/')[currentPath.split('/').length - 1];
     setCurrentRoom(room);
     if (socket) { 
       if (!on) {
         setOn(true)
-        socket.on('dataMessage',(data) =>{   
+        socket.on('dataMessage',(data) =>{  
+          const messages = getMsgs()
+          const updatedChat = messages[room]
+            setChat([...updatedChat, `${data.from}: ${data.content}`])
         registerMsg(`${data.from}: ${data.content}`, data.room)
-        setChat([...chat, data.content])
         console.log('111')
       })
-      socket.on('receivedMessage', (message) => {
-        setChat([...chat, message.content])
-        registerMsg(`${message.from}: ${message.content}`, message.room)
+      socket.on('receivedMessage', (data) => {
+        const messages = getMsgs()
+        const updatedChat = messages[room]
+          setChat([...updatedChat, `${data.from}: ${data.content}`])
+        registerMsg(`${data.from}: ${data.content}`, data.room)
         console.log('222')
       } )
     }  
@@ -33,16 +55,6 @@ const ChatBody = () => {
   
 
   }, [on, socket, chat, setChat])
-
-  const filteredMessages = () => {
-    const msgs =  getMsgs()
-    if (typeof currentRoom === "string" && currentRoom in msgs) {
-      console.log(msgs)
-     const arrMsgs = msgs[currentRoom]
-     return arrMsgs.map((msg) => <div>{msg}</div>)
-    }
-    return null
-  }
 
 
  
@@ -53,7 +65,7 @@ return(
     <ChatHeader />
     {/* {filteredChat.length > 0 && filteredChat.map((message) => <p>{message}</p>)} */}
     <div>corpo</div>
-    {filteredMessages()}
+    {chat.map((msg) => <div>{msg}</div>)}
     <ChatFooter />
     {/* {console.log('mensagem recebida', receivedmMessages)} */}
     {/* {chat.length > 0 && chat.map((message) => <p className='received__message'>{`${selectedUser?.name}: ${message}`}</p>)} */}
