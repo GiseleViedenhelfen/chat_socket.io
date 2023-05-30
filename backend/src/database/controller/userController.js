@@ -38,7 +38,6 @@ class UserController {
     }    
     else {
       const createdUser = await createUser(req.body);
-      // const token = jwt.sign({ data: createdUser }, JWT_SECRET, jwtConfig);
       return res.status(201).json(createdUser);
     }
 

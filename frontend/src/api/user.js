@@ -16,3 +16,9 @@ export async function login(CPF, password) {
     .catch((error) => error.response.data);
   return response;
 }
+export async function CreateUser(name, CPF, password) {
+  const response = await axios
+  .post(baseUrl, {name, CPF, password})
+  .then((response) => response.data)
+  .catch((error) => error.response.data);
+}

@@ -8,7 +8,6 @@ const ChatFooter = () => {
 
   const handleSendMessage = () => {   
     if(message.trim() && socket) {
-      // registerMsg(`${currentUser.username}: ${message}`, roomID)
     socket.emit('message', {
       room: roomID,
       content: message,

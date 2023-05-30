@@ -6,7 +6,7 @@ import ChatContext from "../context/chatContext";
 const Login = () => {
   const [CPF, setCPF] = useState("");
   const [password, setPassword] = useState("");
-  const {setCurrentUser} = useContext(ChatContext)
+  const { setCurrentUser } = useContext(ChatContext)
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
@@ -21,6 +21,7 @@ const Login = () => {
       navigate("/home");
     }
   };
+
   return (
     <div>
       <form>
@@ -39,6 +40,7 @@ const Login = () => {
         <button type="button" onClick={handleClick}>
           login
         </button>
+        <button type="button">cadastro</button>
       </form>
       {userNotFound && (
         <div>
