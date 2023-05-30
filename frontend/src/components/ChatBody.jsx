@@ -1,94 +1,92 @@
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import ChatContext from "../context/chatContext";
-import ChatHeader from './ChatHeader';
-import ChatFooter from './ChatFooter';
-import OnlineUsers from './OnlineUsers';
-import { getMsgs, registerMsg } from '../localStorage/utils';
+import ChatHeader from "./ChatHeader";
+import ChatFooter from "./ChatFooter";
+import OnlineUsers from "./OnlineUsers";
+import { getMsgs, registerMsg } from "../localStorage/utils";
 
 const ChatBody = () => {
-  const {avaibleRooms, setChat, roomID,socket, selectedUser, chat } = useContext(ChatContext);
+  const {  setChat, socket,  chat, currentUser, setCurrentUser } =
+    useContext(ChatContext);
   const [currentRoom, setCurrentRoom] = useState(null);
-  const [messages, setMessages] = useState({})
   const [on, setOn] = useState(false);
   const currentPath = window.location.pathname;
-  
+
   useEffect(() => {
-    if (currentPath) {
-      const room =  currentPath.split('/')[currentPath.split('/').length - 1];
-      const backupMsgs = getMsgs()
-      setMessages(backupMsgs)
-      if (room in backupMsgs) {
-        setChat(backupMsgs[room])
-      } else {
-        backupMsgs[room] = []
-        console.log(backupMsgs)
-        setChat(backupMsgs[room])
+    const resetCurrentUser = () => {
+      const checkLS = JSON.parse(localStorage.getItem('userName'))
+      if (checkLS) {
+        setCurrentUser(checkLS)
       }
-
     }
-  },[currentPath, setChat])
-
+    if (currentPath) {
+      const room = currentPath.split("/")[currentPath.split("/").length - 1];
+      const backupMsgs = getMsgs();
+      if (room in backupMsgs) {
+        setChat(backupMsgs[room]);
+      } else {
+        backupMsgs[room] = [];
+        setChat(backupMsgs[room]);
+      }
+    }
+    resetCurrentUser()
+  }, [currentPath]);
 
   useEffect(() => {
-
-    const room =  currentPath.split('/')[currentPath.split('/').length - 1];
+    const room = currentPath.split("/")[currentPath.split("/").length - 1];
     setCurrentRoom(room);
-    if (socket) { 
+    if (socket) {
       if (!on) {
-        setOn(true)
-        socket.on('dataMessage',(data) =>{  
-          const messages = getMsgs()
-          console.log(messages);
+        setOn(true);
+        socket.on("dataMessage", (data) => {
+          const messages = getMsgs();
           if (messages[room]) {
-            const updatedChat = messages[room]
-            console.log(updatedChat);
-            setChat([...updatedChat, `${data.from}: ${data.content}`])
-            registerMsg(`${data.from}: ${data.content}`, data.room)
-            console.log('111')
+            const updatedChat = messages[room];
+            setChat([...updatedChat, `${data.from}: ${data.content}`]);
+            registerMsg(`${data.from}: ${data.content}`, data.room);
           } else {
-            messages[room] = []
-            setChat([`${data.from}: ${data.content}`])
-            registerMsg(`${data.from}: ${data.content}`, data.room)
+            messages[room] = [];
+            setChat([`${data.from}: ${data.content}`]);
+            registerMsg(`${data.from}: ${data.content}`, data.room);
           }
-      })
-      socket.on('receivedMessage', (data) => {
-        const messages = getMsgs()
-        console.log(messages);
-        if (messages[room]) {
-          const updatedChat = messages[room]
-          setChat([...updatedChat, `${data.from}: ${data.content}`])
-          registerMsg(`${data.from}: ${data.content}`, data.room)
-          console.log('222')
-        } else {
-          messages[room] = []
-          setChat([`${data.from}: ${data.content}`])
-          registerMsg(`${data.from}: ${data.content}`, data.room)
-        }
-      } )
-    }  
+        });
+        socket.on("receivedMessage", (data) => {
+          const messages = getMsgs();
+          if (messages[room]) {
+            const updatedChat = messages[room];
+            setChat([...updatedChat, `${data.from}: ${data.content}`]);
+            registerMsg(`${data.from}: ${data.content}`, data.room);
+          } else {
+            messages[room] = [];
+            setChat([`${data.from}: ${data.content}`]);
+            registerMsg(`${data.from}: ${data.content}`, data.room);
+          }
+        });
+      }
     }
-  
+  }, [on, socket, setChat]);
 
-  }, [on, socket, chat, setChat])
-
-
- 
-return(
-  <div className="chat">
-  <OnlineUsers />
-  <div className="chat__main">
-    <ChatHeader />
-    {/* {filteredChat.length > 0 && filteredChat.map((message) => <p>{message}</p>)} */}
-    <div>corpo</div>
-    {chat.map((msg) => <div>{msg}</div>)}
-    <ChatFooter />
-    {/* {console.log('mensagem recebida', receivedmMessages)} */}
-    {/* {chat.length > 0 && chat.map((message) => <p className='received__message'>{`${selectedUser?.name}: ${message}`}</p>)} */}
-    {/* {console.log('mensagem enviada => ', sentedMessages)} */}
-    {/* {chat.length > 0 && chat.map((message) => <p className='sented__message'>{`you: ${message}`}</p>)} */}
-  </div>
-  </div>
-)
-}
+  return (
+    <div className="chat">
+      <OnlineUsers/>
+      <div className="chat__main">
+        <ChatHeader />
+        {console.log(currentUser)}
+        <p>histórico de mensagens: </p>
+        {currentUser && chat.map((msg) => (
+          msg.split(':')[0] === currentUser.username
+          ?  <div className="sented__message">{msg}</div>
+          :<div className="received__message">{msg}</div>
+         
+        ))}
+        <ChatFooter />
+      </div>
+    </div>
+  );
+};
 
 export default ChatBody;

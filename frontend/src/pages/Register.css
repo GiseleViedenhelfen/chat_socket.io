@@ -1,0 +1,33 @@
+.user__container {
+  width: 30%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.form__container {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+input {
+  border-radius: 5px;
+  padding: 0.5rem;
+  border: 1px solid black;
+}
+
+.user__container button {
+  width: 10rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  align-self: center;
+  border-radius: 5px;
+}
+.form-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}

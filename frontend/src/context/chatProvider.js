@@ -31,7 +31,7 @@ export default function ChatProvider({ children }) {
     setUsersToChat,
   }), [socket, currentUser, selectedUser, roomID,
     avaibleRooms, chat, users, usersToChat, setSocket, setCurrentUser,
-    setSelectedUser, setAvaibleRooms, setRoomID, setChat, setUsers, setUsersToChat]);
+    setSelectedUser, setAvaibleRooms, setRoomID, setChat, setUsersToChat]);
 
   return (
     <ChatContext.Provider value={context}>

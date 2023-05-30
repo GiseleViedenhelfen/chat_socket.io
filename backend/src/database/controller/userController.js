@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 class UserController {
   
   async create(req, res) {
-    const { name, CPF, password } = req.body;
+    const { nome_sobrenome, CPF, password } = req.body;
 
     const jwtConfig = {
       expiresIn: "7d",
@@ -17,7 +17,7 @@ class UserController {
     const getUsers = await readUser();
     const arrCPFs = getUsers.filter((user) => user.CPF === CPF);
 
-    if (name.length < 3) {
+    if (nome_sobrenome.length < 3) {
       return res
         .status(400)
         .json({
@@ -38,7 +38,6 @@ class UserController {
     }    
     else {
       const createdUser = await createUser(req.body);
-      // const token = jwt.sign({ data: createdUser }, JWT_SECRET, jwtConfig);
       return res.status(201).json(createdUser);
     }
 
@@ -46,6 +45,7 @@ class UserController {
   async read(_req, res) {
     try {
       const getUsers = await readUser();
+      console.log(getUsers);
       return res.status(200).json(getUsers);
     } catch (error) {
       console.log(error);
@@ -65,7 +65,7 @@ class UserController {
     }
       const token = jwt.sign({ CPF: getuser.CPF }, JWT_SECRET, jwtConfig);
       res.setHeader('Authorization', token);
-      return  res.status(200).json({ token: token, username: getuser.name });
+      return  res.status(200).json({ token: token, username: getuser.nome_sobrenome });
     } catch (error) {
       return res.status(500).json({ error: "Internal Server Error" });
     }

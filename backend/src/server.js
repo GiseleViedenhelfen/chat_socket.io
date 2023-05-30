@@ -22,7 +22,6 @@ socketIO.on('connection', (socket) => {
   const { query } = socket.handshake
   console.log(`server message: user ${query.userName} just connected!`);
   const checkUser = onlineUsers.filter((user) => user.name === query.userName);
-
   if (checkUser.length > 0) {
     console.log('usuário já está online em outra aba');
   } else {

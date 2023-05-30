@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import ChatContext from "../context/chatContext";
 import { useNavigate } from "react-router-dom";
-
 const OnlineUsers = () => {
   const {users, setUsers, usersToChat, setUsersToChat} = useContext(ChatContext);
   const navigate = useNavigate();
@@ -11,17 +10,22 @@ const OnlineUsers = () => {
     avaibleRooms,
     setAvaibleRooms,
     socket,
+    setSocket,
     setCurrentUser,
     setSelectedUser,
     setRoomID
   } = useContext(ChatContext);
   useEffect(() => {
+   
     socket &&
       socket.on("onlineUsers", (onlineUsers) => {
         setUsers(onlineUsers);
+        console.log('socket onlineUsers', onlineUsers);
       });
     const getUsersToChat = () => {
       const getCurrentUser = JSON.parse(localStorage.getItem("userName"));
+      console.log('função users ToChat', getCurrentUser);
+      console.log('função users ToChat users =>', users);
       users.length > 0 &&
         setUsersToChat(
           users.filter((user) => user.name !== getCurrentUser.username)
@@ -48,7 +52,6 @@ const OnlineUsers = () => {
     );
     setSelectedUser(user);
     setRoomID(getRoom[0])
-    // navigate("/");
     navigate(`/home/${getRoom}`)
     socket.emit('joinPrivateRoom', getRoom, sender.username)
   };
@@ -57,6 +60,8 @@ const OnlineUsers = () => {
       <div>
         <h4 className="chat__header">Usuários Online</h4>
         <ul className="chat__users">
+          {console.log('array users =>', users)}
+          {console.log('usersToChat =>', usersToChat)}
           {usersToChat.map((user) => (
             <li key={user.token}>
               <button

@@ -6,7 +6,7 @@ import ChatContext from "../context/chatContext";
 const Login = () => {
   const [CPF, setCPF] = useState("");
   const [password, setPassword] = useState("");
-  const {setCurrentUser} = useContext(ChatContext)
+  const { setCurrentUser } = useContext(ChatContext)
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
@@ -21,24 +21,36 @@ const Login = () => {
       navigate("/home");
     }
   };
+
   return (
-    <div>
-      <form>
+    <div className="login__container user__container">
+      <form  className="login__form form__container">
+      <h2>Login: </h2>
         <label htmlFor="CPF-field">CPF:</label>
         <input
           type="text"
+          className="CPF-field"
           id="CPF-field"
           onChange={({ target }) => setCPF(target.value)}
         />
         <label htmlFor="password-field">password:</label>
         <input
-          type="text"
+          type="password"
+          className="password-field"
           id="password-field"
           onChange={({ target }) => setPassword(target.value)}
         />
+        <div className="form-button-container">
         <button type="button" onClick={handleClick}>
           login
         </button>
+        <button
+          type="button"
+          onClick={() => navigate('/Register')}
+          >
+            cadastro
+          </button>
+        </div>
       </form>
       {userNotFound && (
         <div>

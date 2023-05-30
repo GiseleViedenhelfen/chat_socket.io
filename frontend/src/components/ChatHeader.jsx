@@ -5,7 +5,7 @@ const ChatHeader = () => {
   const { selectedUser, socket } = useContext(ChatContext);
   const navigate = useNavigate();
   const handleLeaveChat = () => {
-    socket.disconnect();
+    socket && socket.disconnect();
     localStorage.removeItem("userName");
     navigate("/");
   };
