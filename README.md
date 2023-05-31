@@ -2,7 +2,7 @@
 projeto fullstack de construção de chat utilizando node, ExpressJS, socket.io, mongodb, react e css.
 
 INSTALAÇÃO:
-- No terminal, cole o comando git clone git@github.com:GiseleViedenhelfen/chat_socket.io.git.
+- No terminal, cole o comando git clone `git@github.com:GiseleViedenhelfen/chat_socket.io.git`.
 - Troque a pasta para a pasta do projeto.
 - Abra o projeto no vscode.
 - Navegue na pasta /backend e adicione um arquivo .env e adicione as variáveis de acordo com o modelo a seguir:
